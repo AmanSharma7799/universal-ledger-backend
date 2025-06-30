@@ -1,9 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { addEntry, getEntries, verifyLedger } = require('../controllers/ledgerController');
+const ledgerController = require("../controllers/ledgerController");
 
-router.post('/add', addEntry);
-router.get('/', getEntries);
-router.get('/verify', verifyLedger);
+router.post("/add", ledgerController.addEntry);
+router.get("/", ledgerController.getEntries);
+router.get("/verify", ledgerController.verifyLedger);
+router.post("/reset", ledgerController.resetLedger);
 
 module.exports = router;

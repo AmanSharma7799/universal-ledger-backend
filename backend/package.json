@@ -1,12 +1,16 @@
 {
   "name": "universal-ledger-backend",
   "version": "1.0.0",
-  "description": "A simplified Universal Ledger backend",
-  "main": "src/app.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

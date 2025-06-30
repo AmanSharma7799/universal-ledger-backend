@@ -1,18 +1,28 @@
-const ledgerService = require('../services/ledgerService');
+const {
+  addEntry,
+  getAllEntries,
+  verifyLedger,
+  verifyLedgerVerbose,
+  resetLedger,
+} = require("../services/ledgerService");
 
-const addEntry = (req, res) => {
+exports.addEntry = (req, res) => {
   const { data } = req.body;
-  const entry = ledgerService.addEntry(data);
-  res.status(201).json(entry);
+  const entry = addEntry(data);
+  res.json(entry);
 };
 
-const getEntries = (req, res) => {
-  res.json(ledgerService.getAllEntries());
+exports.getEntries = (req, res) => {
+  res.json(getAllEntries());
 };
 
-const verifyLedger = (req, res) => {
-  const isValid = ledgerService.verifyLedger();
-  res.json({ valid: isValid });
+exports.verifyLedger = (req, res) => {
+  const verbose = req.query.verbose === "true";
+  const result = verbose ? verifyLedgerVerbose() : { valid: verifyLedger() };
+  res.json(result);
 };
 
-module.exports = { addEntry, getEntries, verifyLedger };
+exports.resetLedger = (req, res) => {
+  resetLedger();
+  res.json({ status: "ledger reset" });
+};
