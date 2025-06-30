@@ -1,27 +1,30 @@
+const { hash, calculateMerkleRoot } = require("../utils/merkle");
+
 let ledger = [
   {
     data: { genesis: true },
     timestamp: new Date().toISOString(),
     prevHash: "NONE",
-    hash: computeHash({
-      data: { genesis: true },
-      timestamp: new Date().toISOString(),
-      prevHash: "NONE",
-    }),
+    hash: hash(
+      JSON.stringify({
+        data: { genesis: true },
+        timestamp: new Date().toISOString(),
+        prevHash: "NONE",
+      })
+    ),
   },
 ];
 
 function computeHash({ data, timestamp, prevHash }) {
-  const json = JSON.stringify(data) + timestamp + prevHash;
-  return require("crypto").createHash("sha256").update(json).digest("hex");
+  return hash(JSON.stringify(data) + timestamp + prevHash);
 }
 
 function addEntry(entryData) {
   const last = ledger[ledger.length - 1];
   const prevHash = last.hash;
   const timestamp = new Date().toISOString();
-  const hash = computeHash({ data: entryData, timestamp, prevHash });
-  const entry = { data: entryData, timestamp, prevHash, hash };
+  const entryHash = computeHash({ data: entryData, timestamp, prevHash });
+  const entry = { data: entryData, timestamp, prevHash, hash: entryHash };
   ledger.push(entry);
   return entry;
 }
@@ -76,6 +79,11 @@ function verifyLedgerVerbose() {
   return { valid: true };
 }
 
+function getMerkleRoot() {
+  const hashes = ledger.map((entry) => entry.hash);
+  return calculateMerkleRoot(hashes);
+}
+
 function resetLedger() {
   ledger = [
     {
@@ -96,5 +104,6 @@ module.exports = {
   getAllEntries,
   verifyLedger,
   verifyLedgerVerbose,
+  getMerkleRoot,
   resetLedger,
 };
